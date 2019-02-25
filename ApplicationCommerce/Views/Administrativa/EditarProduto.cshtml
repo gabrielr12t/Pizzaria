@@ -1,0 +1,153 @@
+﻿@model ApplicationCommerce.ViewModel.ProdutoEditar
+
+@{
+    ViewData["Title"] = "EditarProduto";
+    Layout = "~/Views/Shared/Administrativa.cshtml";
+}
+
+
+
+<section class="content">
+    <!-- Small boxes (Stat box) -->
+    <div class="row">
+        <div class="col-lg-6 col-lg-offset-3">
+            <h2>Editar produto</h2>
+            <form asp-controller="Administrativa" asp-action="AdicionarItemPRoduto">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                
+                <div class="panel-group" id="accordion">
+                    @{
+
+                        var AllIng = ViewData["Ingredientes"] as List<Ingrediente>;
+                        // IEnumerable<Ingrediente> NaoContem = new List<Ingrediente>();
+                        int i = 1;
+                        string produto = "";
+                        int idPro = 0;
+                        if (ViewData["produ"] != null)
+                        {
+                            var prods = ViewData["produ"] as List<ApplicationCommerce.ViewModel.ProdutoEditar>;
+                            foreach (var item in prods)
+                            {
+                                int idPHI = item.ProdutoHasIngredientes.IdProdutoHasCategoria;
+                                <input type="hidden" name="idPHI" id="@idPHI" />
+                                List<Ingrediente> IngDoProduto = new List<Ingrediente>();
+                                //IEnumerable<Ingrediente> NaoContem = new List<Ingrediente>();
+                                List<Ingrediente> NaoContem = AllIng.ToList();
+
+
+
+                                string collapse = "collapse" + i;
+
+                                if (produto != item.Produtos.Nome)
+                                {
+
+                                    produto = item.Produtos.Nome;
+
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" href="#@collapse">@item.Produtos.Nome <span class="col-lg-1 pull-right"><i class="fa fa-plus"></i></span> </a>
+                                            </h4>
+                                        </div>
+                                        <div id="@collapse" class="panel-collapse collapse">
+                                            <ul class="list-group">
+                                                @foreach (var item2 in prods)
+                                                {
+                                                    if (item2.ProdutoHasIngredientes.ProdutoId == item2.Produtos.IdProduto && item2.Produtos.IdProduto == item.Produtos.IdProduto)
+                                                    {
+                                                        idPro = item.Produtos.IdProduto;
+
+                                                        <li class="list-group-item">
+                                                            <strong>@item2.Ingredientes.Nome  </strong><span> </span> @item2.ProdutoHasIngredientes.Quantidade g
+                                                            <div class="col-lg-1 row pull-right">
+                                                                <a asp-route-id="@item2.ProdutoHasIngredientes.IdProdutoHasCategoria" asp-controller="Administrativa" asp-action="ExcluirItemProduto" data-toggle="tooltip" title="Excluir item do produto"><i class="fa fa-trash fa-2x"></i></a>
+                                                            </div><span> </span>
+                                                            <div class="col-lg-1 pull-right">
+                                                                <a href="#" data-toggle="tooltip" rel="@item2.ProdutoHasIngredientes.IdProdutoHasCategoria|@item2.ProdutoHasIngredientes.Quantidade" title="Editar quantidade usada" class="ChamaModal"><i class="fa fa-edit fa-2x"></i></a>
+                                                            </div>
+                                                        </li>
+
+                                                        IngDoProduto.Add(item2.Ingredientes);
+                                                    }
+                                                }
+                                            </ul><br />
+
+
+                                            @{
+
+
+                                                foreach (var id in AllIng)
+                                                {
+                                                    foreach (var ing in IngDoProduto)
+                                                    {
+                                                        if (id.IdIngrediente == ing.IdIngrediente)
+                                                        {
+                                                            NaoContem.Remove(id);
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            <div class="margin form-group ">
+                                                <label>Adicionar ingrediente a essse produto</label>
+                                                <select asp-for="ProdutoHasIngredientes.Ingrediente.IdIngrediente" class="form-control" asp-items="@(new SelectList(NaoContem.ToList(), "IdIngrediente", "Nome"))"></select>
+                                                <span asp-validation-for="ProdutoHasIngredientes.IngredienteId" class="text-danger"></span>
+                                            </div>
+
+
+                                            <div class="margin form-group ">
+                                                <label>Quantidade do ingrediente (Em gramas)</label>
+
+                                                <input asp-for="ProdutoHasIngredientes.Quantidade" placeholder="Ex: 300" class="form-control" />
+                                                <span asp-validation-for="ProdutoHasIngredientes.Quantidade" class="text-danger"></span>
+                                            </div>
+                                            <div class="panel-footer"><input type="submit" value="Salvar" class="btn btn-success" /></div>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                }
+                                i++;
+                            }
+                        }
+                        else
+                        {
+                            <p> O sistema não possui produto cadastrado </p>
+                        }
+                    }
+                </div>
+
+            </form>
+        </div>
+    </div>
+</section>
+
+ @*       JS DESSE CÓDIGO ESTÁ NA MASTER            *@
+<!-- Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <form asp-action="EditQtdItemProduto">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Editar quantidade gasta</h4>
+                </div>
+                <div class="modal-body">
+                    <label asp-for="ProdutoHasIngredientes.Quantidade" class="control-label"></label>
+                    <input asp-for="ProdutoHasIngredientes.Quantidade" id="QuantidadeE" placeholder="Ex: 50" class="form-control" />
+                    <span asp-validation-for="ProdutoHasIngredientes.Quantidade" class="text-danger"></span><br />
+                    <input type="submit" value="Alterar" class="btn btn-success" />
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" name="IdE" id="IdE" />
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

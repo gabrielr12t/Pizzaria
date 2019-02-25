@@ -1,0 +1,307 @@
+﻿@model ApplicationCommerce.ViewModel.CadastrarEditarIngredientes
+
+@{
+    ViewData["Title"] = "CadastrarIngrediente";
+    Layout = "~/Views/Shared/Administrativa.cshtml";
+}
+
+<link rel="stylesheet" href="~../../bower_components/font-awesome/css/font-awesome.min.css">
+<!-- Ionicons -->
+<link rel="stylesheet" href="~../../bower_components/Ionicons/css/ionicons.min.css">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.js"></script>
+
+
+ 
+
+
+
+
+<section class="content">
+    <!-- Small boxes (Stat box) -->
+    <div class="row">
+        <div class="col-lg-6 ">
+            <h2>Cadastrar ingrediente</h2>
+            <form asp-action="CadastrarIngrediente">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Ingredientes.Nome" class="control-label"></label>
+                    <input asp-for="Ingredientes.Nome" placeholder="Ex: Mussarela" class="form-control" />
+                    <span asp-validation-for="Ingredientes.Nome" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Ingredientes.Quantidade" class="control-label"></label>
+                    <input asp-for="Ingredientes.Quantidade" placeholder="Ex: 1000" class="form-control" />
+                    <span asp-validation-for="Ingredientes.Quantidade" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Ingredientes.PrecoQuilo" class="control-label"></label>
+                    <input asp-for="Ingredientes.PrecoQuilo" placeholder="Ex 19,00" class="form-control preco" />
+                    <span asp-validation-for="Ingredientes.PrecoQuilo" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Ingredientes.QuantidadeMaxima" class="control-label"></label>
+                    <input asp-for="Ingredientes.QuantidadeMaxima" placeholder="Ex 2500" class="form-control" />
+                    <span asp-validation-for="Ingredientes.QuantidadeMaxima" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Cadastrar" class="btn btn-success" />
+                </div>
+            </form>
+        </div>
+        <br /><br />
+        @{
+            if (ViewData["Lista"] != null)
+            {
+                <div class="col-lg-6">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Tabela de ingredientes</h3>
+
+                            <div class="box-tools">
+                                <ul class="pagination pagination-sm no-margin pull-right">
+                                    <li><a href="#">&laquo;</a></li>
+                                    <li><a href="#">1</a></li>
+                                    <li><a href="#">2</a></li>
+                                    <li><a href="#">3</a></li>
+                                    <li><a href="#">&raquo;</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- /.box-header -->
+
+                        <div class="box-body no-padding">
+                            <table class="table">
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Quantidade Estoque</th>
+                                    <th>Preço quilo</th>
+                                    <th>Estoque</th>
+                                    <th></th>
+                                    <th>Editar</th>
+                                    <th>Exlcuir</th>
+                                </tr>
+
+                                @foreach (var item in ViewData["Lista"] as List<Ingrediente>)
+                                {
+                                    double precoKilo;
+                                    double quantidade;
+                                    double qtdMaxima;
+                                    double estoque = 0;
+
+                                    string barra = "";
+                                    string cor = "";
+                                    precoKilo = (Convert.ToDouble(item.PrecoQuilo));
+                                    quantidade = (Convert.ToDouble(item.Quantidade));
+                                    qtdMaxima = (Convert.ToDouble(item.QuantidadeMaxima));
+
+                                    if (quantidade > 0)
+                                    {
+                                        estoque = Math.Round((quantidade / 1000), 2);
+                                        precoKilo = Math.Round(((quantidade / 1000) * precoKilo), 2);
+                                        quantidade = Math.Round(((Convert.ToDouble(quantidade) / qtdMaxima) * 100), 0);
+                                    }
+                                    else
+                                    {
+                                        precoKilo = 0;
+                                    }
+
+                                    if (quantidade >= 75)
+                                    {
+                                        barra = "success";
+                                        cor = "green";
+
+                                    }
+                                    if (quantidade >= 50 && quantidade < 75)
+                                    {
+                                        barra = "success";//precisa ser um verde mais fraco
+                                        cor = "green";
+                                    }
+                                    if (quantidade < 50 && quantidade > 25)
+                                    {
+                                        barra = "warning";
+                                        cor = "yellow";
+                                    }
+                                    if (quantidade <= 25)
+                                    {
+                                        barra = "danger";
+                                        cor = "red";
+                                    }
+
+                                    <tr>
+                                        <td>@Html.DisplayFor(m => item.Nome)</td>
+                                        <td>@Html.DisplayFor(m => item.Quantidade) g</td>
+                                        <td>R$ @Html.DisplayFor(m => item.PrecoQuilo)</td>
+                                        <td>
+                                            <div class="progress progress-xs">
+                                                <div class="progress-bar progress-bar-@barra" style="width: @quantidade%"></div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge bg-@cor">@quantidade  %</span></td>
+                                        <td><a href="#" data-toggle="tooltip" title="Editar" class="ModalEditar" rel="@item.Nome|@item.Quantidade|@item.PrecoQuilo|@item.QuantidadeMaxima|@item.IdIngrediente"><i class="glyphicon glyphicon-edit"></i></a></td>
+                                        <td><a asp-route-id="@item.IdIngrediente" asp-action="ExcluirIngrediente" data-toggle="tooltip" title="Excluir"><i class="glyphicon glyphicon-trash"></i></a></td>
+                                    </tr>
+                                    precoKilo = 0;
+                                    quantidade = 0;
+                                    estoque = 0;
+                                }
+                            </table>
+                        </div>
+
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+            }
+            else
+            {
+                <p>nenhum ingrediente cadastrado</p>
+            }
+        }
+    </div>
+</section>
+
+
+
+<!-- The Modal -->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+
+
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Editar produto</h4>
+
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+
+            <div class="modal-body">
+                <form asp-action="EditarIngrediente">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" name="IdE" id="IdE" />
+
+                    <div class="form-group">
+                        <label asp-for="IngredienteEdit.Nome" class="control-label"></label>
+                        <input asp-for="IngredienteEdit.Nome" id="NomeE" required class="form-control" />
+                        <span asp-validation-for="IngredienteEdit.Nome" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantidade em estoque</label>
+                        <input readonly asp-for="IngredienteEdit.Quantidade" id="QuantidadeE" required class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="IngredienteEdit.PrecoQuilo" class="control-label"></label>
+                        <input asp-for="IngredienteEdit.PrecoQuilo" id="PrecoQuiloE" required class="form-control" />
+                        @*<span asp-validation-for="PrecoQuilo" class="text-danger"></span>*@
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="IngredienteEdit.QuantidadeMaxima" class="control-label"></label>
+                        <input asp-for="IngredienteEdit.QuantidadeMaxima" id="QuantidadeMaximaE" required class="form-control" />
+                        <span asp-validation-for="IngredienteEdit.QuantidadeMaxima" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantidade para alterar</label>
+                        <input name="qtdAlterar" required class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" name="Btn" value="Adicionar" class="btn btn-success" /><span> </span>
+                        <input type="submit" name="Btn" value="Remover" class="btn btn-danger" />
+                    </div>
+                    @{
+                        if (ViewData["Alterado"] != null)
+                        {
+                            <div class="alert alert-success">
+                                <strong>Success!</strong> This alert box could indicate a successful or positive action.
+                            </div>
+
+                        }
+                    }
+                </form>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+@*end modal*@
+
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+
+
+<script type="text/javascript">
+
+    //Atribuir valores à modal editar
+    $(".ModalEditar").click(function () {
+        $("#myModal").modal("show");
+        var dados = $(this).attr("rel").split("|");
+        $("#NomeE").val(dados[0]);
+        $("#QuantidadeE").val(dados[1]);
+        $("#PrecoQuiloE").val(dados[2]);
+        $("#QuantidadeMaximaE").val(dados[3]);
+        $("#IdE").val(dados[4]);
+    });
+</script>
+
+@*Botao editar*@
+
+@*<script type="text/javascript">
+
+
+        $(".BotaoEditar").click(function () {
+            var nome = $("#NomeE").val();
+            var quantidade = $("#QuantidadeE").val();
+            var precoQuilo = $("#PrecoQuiloE").val();
+            var quantidadeMaxima = $("#QuantidadeMaximaE").val();
+            var id = $("#IdE").val();
+
+            $.ajax({
+                type: "POST",
+                url: '/Administrativa/EditarIngrediente',
+                data: {
+                    'Nome': nome,
+                    'Quantidade': quantidade,
+                    'PrecoQuilo': precoQuilo,
+                    'QuantidadeMaxima': quantidadeMaxima,
+                    'Id': id
+                },
+                success: function (data) {
+                    swal("Show!", "Este ingrediente foi atualizado!", "success", {
+                        button: "Ok!",
+                    });
+                    //setTimeout(function () { location.reload(); }, 600000);
+                    //location.reload();
+                },
+                error: function (error) {
+                    swal("Ops!", "Preencha todos os campos para atualizar!", "error", {
+                        button: "Tentar novamente!",
+                    });
+                }
+            });
+        });
+    </script>*@
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+
+
+
+

@@ -1,0 +1,8 @@
+﻿tipo usuario {
+	1 = administrador
+	2 = funcionário
+	3 = cozinheiro
+	4 = cliente
+}
+
+

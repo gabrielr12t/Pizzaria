@@ -1,0 +1,85 @@
+﻿@model ApplicationCommerce.Models.Produto
+
+@{
+    ViewData["Title"] = "CadastrarProduto";
+    Layout = "~/Views/Shared/Administrativa.cshtml";
+}
+
+ 
+
+<section class="content">
+    <!-- Small boxes (Stat box) -->
+    <div class="row">
+        <div class="col-lg-6">
+            @using (Html.BeginForm())
+            {
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="CategoriaId" class="control-label"></label>
+                    <select id="ddl" asp-for="CategoriaId"  name="ddlCategoria" class="form-control" asp-items="ViewBag.Categoria"></select>
+                    <span asp-validation-for="CategoriaId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Nome" class="control-label"></label>
+                    <input asp-for="Nome" placeholder="Ex: Calabresa" class="form-control" />
+                    <span asp-validation-for="Nome" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ValorAtual" class="control-label"></label>
+                    <input asp-for="ValorAtual" placeholder="Ex: 45,90" class="form-control preco" />
+                    <span asp-validation-for="ValorAtual" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="TempoProduzir" class="control-label"></label>
+                    <input asp-for="TempoProduzir" placeholder="Ex: 10" class="form-control" />
+                    <span asp-validation-for="TempoProduzir" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Foto" class="control-label"></label>
+                    <input asp-for="Foto" class="form-control" />
+                    <span asp-validation-for="Foto" class="text-danger"></span>
+                </div>
+                <h3>Selecione os ingredientes para este produto</h3><br />
+                <div class="form-group">
+
+                    @Html.AntiForgeryToken()
+
+                    @{
+                        List<ApplicationCommerce.Models.Ingrediente>
+                       ingredientes = ViewBag.Ingredientes;
+
+                        foreach (var item in ingredientes)
+                        {
+
+                            <label>
+                                <input type="checkbox"
+                                       name="selectedIngredientes"
+                                       value="@item.IdIngrediente"
+                                       class="flat-red" />
+                                @item.Nome<span> </span>
+                            </label>
+                        }
+                    }
+
+                </div>
+                <br />
+                <div class="form-group">
+                    <input type="submit" value="Cadastrar" class="btn btn-success" />
+                </div>
+            }
+            @*<div class="form-group">
+                    <label asp-for="TamanhoId" class="control-label"></label>
+                    <select asp-for="TamanhoId" class="form-control" asp-items="ViewBag.TamanhoId"></select>
+                </div>*@
+        </div>
+
+       
+      
+    </div>
+</section>
+ 
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,136 @@
+@model ApplicationCommerce.ViewModel.ProdutoEditar
+
+@{
+ViewData["Title"] = "EditarProduto";
+Layout = "~/Views/Shared/Administrativa.cshtml";
+}
+
+	<div class="container">
+		<h2>Collapsible List Group</h2>
+		<p>Click on the collapsible panel to open and close it.</p>
+		<div class="panel-group">
+
+			@{
+				List<ApplicationCommerce.ViewModel.ProdutoEditar> edit = ViewBag.Produtos;
+				List<Ingrediente> completa = ViewBag.Ingredientes;
+				List<Ingrediente> Adicionar;
+				string collapse = "";
+				int i=0;
+				string nome = "";
+				foreach (var produto in edit)
+				{					 
+					if (nome != produto.Produtos.Nome)
+					{						
+						Adicionar = completa.ToList();
+						nome = produto.Produtos.Nome;
+						collapse = "collapse" + @i;
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<a data-toggle="collapse" href="#@collapse">@produto.Produtos.Nome</a>
+								</h4>
+							</div>
+							<div id="@collapse" class="panel-collapse collapse">
+								<ul class="list-group">
+									<!-- ingredientes do produto -->
+									@{
+										int qtdIngrediente = 0;
+										foreach (var ingrediente in edit)
+										{
+											if(produto.Produtos.IdProduto == ingrediente.ProdutoHasIngredientes.ProdutoId &&
+											ingrediente.Produtos.IdProduto == produto.Produtos.IdProduto)
+											{
+												qtdIngrediente++;
+												<li class="list-group-item">
+													<strong>@ingrediente.Ingredientes.Nome  </strong><span> </span> @ingrediente.ProdutoHasIngredientes.Quantidade g
+													<div class="col-lg-1 row pull-right">
+														<a asp-route-id="@ingrediente.ProdutoHasIngredientes.IdProdutoHasCategoria" asp-controller="Administrativa" asp-action="ExcluirItemProduto" data-toggle="tooltip" title="Excluir item do produto"><i class="fa fa-trash fa-2x"></i></a>
+													</div><span> </span>
+													<div class="col-lg-1 pull-right">
+														<a href="#" data-toggle="tooltip" rel="@ingrediente.ProdutoHasIngredientes.IdProdutoHasCategoria|@ingrediente.ProdutoHasIngredientes.Quantidade|@ingrediente.Ingredientes.Nome" title="Editar quantidade usada" class="ModalEditarIng"><i class="fa fa-edit fa-2x"></i></a>
+													</div>
+												</li>  
+
+												<!-- Removendo ingredientes que já possuem no produto para nao add ingrediente repetido-->
+												Adicionar.RemoveAll(val => val.IdIngrediente == ingrediente.Ingredientes.IdIngrediente);
+											}
+										}
+										if(qtdIngrediente == 0)
+										{
+											<li class="list-group-item text-danger"><h4>Produto sem ingredientes</h4></li>
+										}
+									}
+								</ul>
+								<form asp-controller="Administrativa" asp-action="AdicionarItemPRoduto">
+									<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+									<div class="margin form-group ">
+										<label>Adicionar ingrediente a essse produto</label>
+										<select asp-for="ProdutoHasIngredientes.Ingrediente.IdIngrediente" class="form-control" asp-items="@(new SelectList(Adicionar.ToList(), "IdIngrediente", "Nome"))"></select>
+										<span asp-validation-for="ProdutoHasIngredientes.IngredienteId" class="text-danger"></span>
+									</div>
+
+									<div class="margin form-group ">
+										<label>Quantidade do ingrediente (Em gramas)</label>
+										<input asp-for="ProdutoHasIngredientes.Quantidade" placeholder="Ex: 300" class="form-control" />
+										<span asp-validation-for="ProdutoHasIngredientes.Quantidade"  class="text-danger"></span>
+									</div>
+									<div class="panel-footer">
+										<input type="hidden" name="IdProduct" value="@produto.Produtos.IdProduto" />
+										<input type="submit" value="Salvar" class="btn btn-success" />										
+									</div>   
+								</form>                     
+							</div>
+						</div>
+						i++;
+					}
+				}
+				<br/> 
+			}
+		</div>
+	</div>
+
+
+<!-- MODAL EDITAR INGREDIENTE -->
+ 
+<!-- FORM -->
+<form asp-action="EditQtdItemProduto">
+	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+	<div class="modal fade" id="ModalEditIngrediente" tabindex="-1" role="dialog" aria-labelledby="ModalEditIngrediente" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+		<div class="modal-header">
+			<h5 class="modal-title" id="exampleModalLabel">Alterar ingrediente</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		<div class="modal-body">
+			<form>
+			<div class="form-group">
+				<label   class="col-form-label">Ingrediente:</label>
+				<input asp-for="Ingredientes.Nome" type="text" class="form-control" readonly id="NomeE" name="NomeE">
+			</div>
+			<div class="form-group">
+				<label for="message-text" class="col-form-label">Quantidade:</label>
+				<input asp-for="ProdutoHasIngredientes.Quantidade"  class="form-control" id="QuantidadeE">
+				<span asp-validation-for="ProdutoHasIngredientes.Quantidade" class="text-danger"></span><br />
+			</div>
+			</form>
+		</div>
+		<div class="modal-footer">
+			<input type="hidden" name="IdE" id="IdE" />
+			<button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+			<input type="submit" value="Alterar" class="btn btn-success" />
+		</div>
+		</div>
+	</div>
+	</div>
+</form>
+<!-- FORM -->
+ <!-- --------------- FIM MODAL --------------------- -->
+
+ 
+
+@section Scripts {
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

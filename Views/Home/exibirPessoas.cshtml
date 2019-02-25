@@ -1,0 +1,11 @@
+@model IEnumerable<ApplicationCommerce.Models.Pessoa>
+
+@{
+    foreach (var item in Model)
+    {
+        <div class="pull-left">
+            <img src="@item.CaminhoFoto" class="img-circle" alt="User Image">
+            <p>Nome: @item.Nome</p>
+        </div>
+    }
+}

@@ -1,0 +1,46 @@
+﻿ 
+
+@{
+
+    Layout = null;
+
+}
+
+
+
+<!DOCTYPE html>
+
+
+
+<html>
+
+<head>
+
+    <meta name="viewport" content="width=device-width" />
+
+    <title>Upload_Image</title>
+
+</head>
+
+<body>
+
+    <br /><br />
+
+    <span style="margin-top:10px;"> Upload Your Profil Image:</span>
+
+    <br />
+
+    <form asp-controller="Home" asp-action="Upload_User_Profil_Image" method="post" enctype="multipart/form-data">
+        <input type="file" name="uploaded_File" />
+        <br />
+        <button type="submit" style="">Upload</button>         
+    </form>
+
+
+     
+             
+       
+
+
+</body>
+</html>

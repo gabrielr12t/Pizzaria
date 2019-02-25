@@ -1,0 +1,40 @@
+@model ApplicationCommerce.Models.Ingrediente
+
+  
+@{
+    ViewData["Title"] = "Cadastro";
+    Layout = "~/Views/Shared/Administrativa.cshtml";
+}
+
+
+<div class="form-group">
+    <label asp-for="Nome" class="control-label"></label>
+    <select asp-for="IdIngrediente" id="slct" multiple class="form-control" class="form-control select2 select2-hidden-accessible" asp-items="@ViewBag.ings"></select>
+</div>
+
+
+
+
+
+ 
+
+<script>
+    $('#slct').change(function () {
+            var str = "";
+            var id = "";
+            
+            var values = [];
+            $("#selectInsumos option:selected").each(function (i) {
+                id = $(this).text();
+                str += $(this).text() +
+                    "<p><input id='Quantidade' type='text' class='form-control' placeholder='Quantidade do produto'/> </p>";
+
+                for (var i = 0; i < inputs.length; i++) {
+                    values.push($(inputs[i]).val());
+                }
+            });
+            $("#Valor").val(Insumos);
+            $("#Insumo").html(str);
+        })
+        .trigger("change");
+</script>

@@ -1,0 +1,99 @@
+@{
+ViewData["Title"] = "CadastrarIngrediente";
+Layout = "~/Views/Shared/Administrativa.cshtml";
+}
+
+<style>
+    .slidecontainer {
+    width: 100%;
+}
+
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 25px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: #4CAF50;
+    cursor: pointer;
+}
+</style>
+
+
+<h1>Faixa de preço</h1>
+ <div class="col-lg-2">
+    <div class="slidecontainer ">
+        <input type="range" min="1" max="100" value="1" class="slider" id="myRange">
+        <p>valor: <span id="demo"></span></p>
+    </div>
+</div>
+<table class="table">
+    <thead>
+      <tr>
+        <th>Preço</th>
+        <th>Nome</th>        
+      </tr>
+    </thead>
+    <tbody id="produtos">
+      <!-- <tr>
+        <td>John</td>
+        <td>Doe</td>
+        <td>john@example.com</td>
+      </tr>       -->
+      
+    </tbody>
+  </table>
+
+<script>
+    var slider = document.getElementById("myRange");
+    var output = document.getElementById("demo");
+    output.innerHTML = slider.value;
+
+    slider.oninput = function () {
+        output.innerHTML = this.value;
+        var valor = this.value;
+
+        $.ajax({
+        dataType: "json",
+        type: "POST",
+        url: '/Home/pesquisarpreco',
+        data: {
+            'Preco':valor             
+        },
+
+        success: function (dados) { 
+            var exibir = "";          
+             $(dados).each(function (i) {
+                  exibir += "<tr><td>"+dados[i].valorAtual+"</td><td>"+dados[i].nome+"</td>";
+      
+             });
+             $('#produtos').html(exibir);
+        },
+        error: function (error) {
+            alert('Erro')
+        }
+
+    });
+    }
+</script>

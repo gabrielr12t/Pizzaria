@@ -1,0 +1,134 @@
+@{
+ViewData["Title"] = "Pedido";
+Layout = "~/Views/Shared/Funcionario.cshtml";
+}
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<div id="fh5co-menus" data-section="menu">
+    <div class="container">
+        <div class="row text-center fh5co-heading row-padded">
+            <div class="col-md-6  ">
+                <h2 class="heading to-animate">Cardápio</h2>
+                @{
+                List<Categoria> categorias = ViewBag.Categorias;
+                    foreach (var item in categorias)
+                    {
+                    <button type="button" onclick="CarregarProdutos(@item.IdCategoria)" class="btn btn-info">@item.Nome</button>
+                    }
+                    }
+            </div>
+        </div>
+
+        <div class="row row-padded">
+            <div class="col-md-12">
+                <div class="fh5co-food-menu to-animate-2">
+                    <!-- <h2 class="fh5co-dishes">CATEGORIA</h2> -->
+                    <ul id="produtos">
+
+                        <!-- <li>
+                            <div class="fh5co-food-desc">
+                                <figure>
+                                    <img src="~/images/imagemProduto/transferir.jpg" class="img-responsive" alt="Free HTML5 Templates by FREEHTML5.co">
+                                </figure>
+                                <div>
+                                    <h3>Pineapple Juice</h3>
+                                    <p>Far far away, behind the word mountains.</p>
+                                </div>
+                            </div>
+                            <div class="fh5co-food-pricing">
+                                $17.50
+                            </div>
+                        </li> -->
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+         
+            
+        
+
+    </div>
+</div>
+
+
+
+
+
+
+<script>
+    function CarregarProdutos(id) {
+
+        var idCategoria = id;
+        if (idCategoria != 0) {
+            var Barrapesquisa = '<input type="text" placeholder="Procure o produto.." class="form-control" name="search">';
+            $("#barraPesquisa").html(Barrapesquisa);
+
+            $.ajax({
+                dataType: "json",
+                type: "POST",
+                url: '/Funcionario/CarregarProdutos',
+                data: {
+                    'Id': idCategoria
+                },
+
+                success: function (data) {
+                    var exibir = "";
+                    var produto = "";
+                    var fechar = false;
+                    var cont = 0;
+                    var con = 0;
+
+                    if (data.length > 0) {
+                        $(data).each(function (i) {
+
+                            if (produto != data[i].nome && cont != 0) {
+                                exibir += '</div>'
+                                exibir += '</div>'
+                                exibir += '<div class="fh5co-food-pricing">'
+                                exibir += 'R$' + data[i - 1].preco + '';
+                                exibir += '</div><div class="fh5co-food-pricing"><a href="#"><i class="fa fa-cart-plus fa-2x"></i></a></div>'
+                                exibir += '</li>';
+                            }
+                            if (produto != data[i].nome) {
+                                exibir += '<li>'
+                                exibir += '<div class="fh5co-food-desc">'
+                                exibir += '<figure>'
+                                exibir += '<img src="/images/ImagemProduto/transferir.jpg" class="img-responsive" alt="Free HTML5 Templates by FREEHTML5.co">'
+                                exibir += '</figure>'
+                                exibir += '<div>'
+                                exibir += '<h3>' + data[i].nome + '</h3>';
+
+                            }
+                            exibir += '<p>' + data[i].ingrediente + '</p>';
+
+                            produto = data[i].nome;
+                            cont++;
+                            con = i;
+
+                            if (data.length == i + 1) {
+                                exibir += '</div>'
+                                exibir += '</div>'
+                                exibir += '<div class="fh5co-food-pricing">'
+                                exibir += 'R$' + data[con].preco + '';
+                                exibir += '</div><div class="fh5co-food-pricing"><a href="#"><i class="fa fa-cart-plus fa-2x"></i></a></div>'
+                                exibir += '</li>';
+
+                            }
+                        });
+                    }else{
+                        exibir = "<p>Não há produtos</p>";
+                    }
+
+
+                    $('#produtos').html(exibir);
+                }
+            });
+        }
+    }
+</script>
+
+@section Scripts {
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

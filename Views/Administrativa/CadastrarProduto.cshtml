@@ -1,0 +1,109 @@
+﻿
+
+@{
+ViewData["Title"] = "CadastrarProduto";
+Layout = "~/Views/Shared/Administrativa.cshtml";
+}
+
+ <style>
+    .image-upload > input
+    {
+        display: none;
+    }
+
+    .image-upload img
+    {
+        width: 80px;
+        cursor: pointer;
+    }
+ </style> 
+
+
+<section id="content" class="content">
+    <!-- Small boxes (Stat box) -->
+    <div class="row">
+        <div class="col-lg-6">
+            <!-- <form asp-action="CadastrarProduto" asp-controller="Administrativa" method="post" enctype="multipart/form-data">  
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div> -->
+
+                 <div class="form-group">
+                    <label class="control-label">Categoria</label>
+                    <select onchange="pegarId();" id="CategoriaId" class="form-control" asp-items="ViewBag.Categoria">
+                        <option value="" selected disabled hidden>Selecione</option>
+                    </select>
+                    <span id="lblCategoriaId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">Nome</label>
+                    <input id="Nome"   autofocus placeholder="Ex: Calabresa" class="form-control" />
+                    <span id="lblNome" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Valor</label>
+                    <input id="ValorAtual"   placeholder="Ex: 45,90" class="form-control preco" />
+                    <span id="lblValorAtual" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">Tempo para produzir este produto</label>
+                    <input id="TempoProduzir"   placeholder="Ex: 10" class="form-control" />
+                    <span id="lblTempoProduzir" class="text-danger"></span>
+                </div>
+                <!-- <div class="form-group">
+                    <label class="control-label">Insira uma foto do produto</label>
+                    <input id="files" name="files" type="file" class="form-control" />
+                    <span id="lblFoto" class="text-danger"></span>
+                </div> -->
+
+                <div class="form-group">
+
+                    @Html.AntiForgeryToken()
+
+                    @{
+                    List<ApplicationCommerce.Models.Ingrediente> ingredientes = ViewBag.Ingredientes;
+
+
+                        <h4>Selecione os ingredientes para este produto ou <a style="text-decoration:underline"
+                                asp-action="cadastraringrediente">Adicionar mais ingredientes</a></h4><br />
+                        int i = 0;
+                        //class="flat-red"
+                        foreach (var item in ingredientes)
+                        {
+
+                            <label>
+                                <input type="checkbox" id="@item.IdIngrediente" name="selectedIngredientes" onclick="funcaoCheckbox('@item.IdIngrediente', '@item.Nome')"
+                                    value="@item.IdIngrediente"></input>
+                                @item.Nome<span>&nbsp;&nbsp;</span>
+                            </label>
+
+                            i++;
+                        }
+                    }
+
+                </div>
+
+                <div class="form-group">
+                    <label id="ckbInputs"></label>
+                </div>
+
+                <br />
+                <div class="form-group">
+                    <button  onclick="validar()" class="btn btn-success">Cadastrar</button>
+                </div>
+
+          
+
+        </div>
+
+          <div class="col-lg-6">            
+                <label class="col-lg-12" id="recebe"><label>
+            
+        </div>                
+    </div>
+</section>
+
+
+@section Scripts {
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,84 @@
+﻿@model ApplicationCommerce.Models.Categoria
+
+@{
+    ViewData["Title"] = "CadastrarCategoria";
+    Layout = "~/Views/Shared/Administrativa.cshtml";
+}
+
+<section class="content">
+    <!-- Small boxes (Stat box) -->
+    <div class="row">
+        <div class="col-lg-6 ">           
+            <h2>Cadastrar categoria</h2>
+            <form asp-action="CadastrarCategoria">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Nome" class="control-label"></label>
+                    <input asp-for="Nome" autofocus class="form-control" placeholder="Ex: Pizza" />
+                    <span asp-validation-for="Nome" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Cadastrar" class="btn btn-success" />
+                </div>
+            </form>
+        </div>
+        <br />
+        @{
+            if (ViewData["categorias"] != null)
+            {
+                <div class="col-lg-6">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Tabela de categorias</h3>
+
+                            <div class="box-tools">
+                                <ul class="pagination pagination-sm no-margin pull-right">
+                                    <li><a href="#">&laquo;</a></li>
+                                    <li><a href="#">1</a></li>
+                                    <li><a href="#">2</a></li>
+                                    <li><a href="#">3</a></li>
+                                    <li><a href="#">&raquo;</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- /.box-header -->
+
+                        <div class="box-body no-padding">
+                            <table class="table">
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Editar</th>
+                                    <th>Exlcuir</th>
+                                </tr>
+
+                                @foreach (var item in ViewData["categorias"] as List<Categoria>)
+                                {
+                                    <tr>
+                                        <td>@Html.DisplayFor(m => item.Nome)</td>
+                                        <td><a href="#" data-toggle="modal" data-target="#myModal" class="ModalEditar" rel="@item.IdCategoria | @item.Nome"><i class="glyphicon glyphicon-edit"></i></a></td>
+                                        <td><a asp-route-id="@item.IdCategoria" asp-action="ExcluirCategoria"><i class="glyphicon glyphicon-trash"></i></a></td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+            }
+            else
+            {
+                <p>nenhuma categoria cadastrada</p>
+            }
+        }
+
+
+
+
+    </div>
+</section>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

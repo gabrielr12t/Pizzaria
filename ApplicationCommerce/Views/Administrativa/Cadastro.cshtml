@@ -1,0 +1,198 @@
+﻿@model ApplicationCommerce.ViewModel.PessoaEndereco
+
+@{
+    ViewData["Title"] = "Cadastro";
+    Layout = "~/Views/Shared/Administrativa.cshtml";
+}
+
+
+
+
+ 
+<section class="content">
+    <!-- Small boxes (Stat box) -->
+    <div class="row">
+        <div class="col-lg-6 col-lg-offset-3">
+            <h3>Cadastro pessoa</h3>
+            <form asp-action="Cadastro">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Pessoa.TipoPessoa.Nome" class="control-label"></label>
+                    <select asp-for="Pessoa.TipoPessoaId" class="form-control" asp-items="@ViewBag.Tipo"></select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Pessoa.Nome" class="control-label"></label>
+                    <input asp-for="Pessoa.Nome" class="form-control" />
+                    <span asp-validation-for="Pessoa.Nome" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Pessoa.Sobrenome" class="control-label"></label>
+                    <input asp-for="Pessoa.Sobrenome" class="form-control" />
+                    <span asp-validation-for="Pessoa.Sobrenome" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Pessoa.Cpf" class="control-label"></label>
+                    <input asp-for="Pessoa.Cpf" class="form-control cpf" />
+                    <span asp-validation-for="Pessoa.Cpf" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Pessoa.DataNascimento" class="control-label"></label>
+                    <input asp-for="Pessoa.DataNascimento" type="text" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask class="form-control" />
+                    <span asp-validation-for="Pessoa.DataNascimento" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Pessoa.Email" class="control-label"></label>
+                    <input asp-for="Pessoa.Email" class="form-control" />
+                    <span asp-validation-for="Pessoa.Email" class="text-danger"></span>
+                </div>
+                @{
+                    if (ViewData["Email"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade in">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <strong>Erro!</strong> Digite um email válido.
+                        </div>
+                    }
+                }
+                <div class="form-group">
+                    <label asp-for="Pessoa.Senha" class="control-label"></label>
+                    <input asp-for="Pessoa.Senha" class="form-control" />
+                    <span asp-validation-for="Pessoa.Senha" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Pessoa.Telefone" class="control-label"></label>
+                    <input asp-for="Pessoa.Telefone" class="form-control telefone" />
+                    <span asp-validation-for="Pessoa.Telefone" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Pessoa.Celular" class="control-label"></label>
+                    <input asp-for="Pessoa.Celular" class="form-control celular" />
+                    <span asp-validation-for="Pessoa.Celular" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Pessoa.CaminhoFoto" class="control-label"></label>
+                    <input type="file" name="foto" id="foto" class="form-control" />
+                    <span asp-validation-for="Pessoa.CaminhoFoto" class="text-danger"></span>
+                </div>
+                <hr />
+                <h3>Endereço</h3>
+                <div class="form-group">
+                    <label asp-for="Endereco.Cep" class="control-label"></label>
+                    <input asp-for="Endereco.Cep" class="form-control cep" />
+                    <span asp-validation-for="Endereco.Cep" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Endereco.Rua" class="control-label"></label>
+                    <input asp-for="Endereco.Rua" class="form-control rua" />
+                    <span asp-validation-for="Endereco.Rua" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Endereco.Bairro" class="control-label"></label>
+                    <input asp-for="Endereco.Bairro" class="form-control bairro" />
+                    <span asp-validation-for="Endereco.Bairro" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Endereco.Cidade" class="control-label"></label>
+                    <input asp-for="Endereco.Cidade" class="form-control cidade" />
+                    <span asp-validation-for="Endereco.Cidade" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Endereco.Numero" class="control-label"></label>
+                    <input asp-for="Endereco.Numero" class="form-control" />
+                    <span asp-validation-for="Endereco.Numero" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Endereco.Estado" class="control-label"></label>
+                    <input asp-for="Endereco.Estado" class="form-control uf" />
+                    <span asp-validation-for="Endereco.Estado" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Endereco.Referencia" class="control-label"></label>
+                    <input asp-for="Endereco.Referencia" class="form-control" />
+                    <span asp-validation-for="Endereco.Referencia" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Cadastrar" class="btn btn-success" />
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Select2 -->
+<script src="~/../../bower_components/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="~/../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+ 
+
+<script type="text/javascript">
+
+
+
+    //------------------------ BUSCA CEP ----------------------------
+    $(document).ready(function () {
+        $('.cep').mask('99999-999');
+    });
+    $(document).ready(function () {
+        function limpa_formulário_cep() {
+            // Limpa valores do formulário de cep.
+            $('.rua').val("");
+            $('.bairro').val("");
+            $('.cidade').val("");
+            $('.uf').val("");
+        }
+        //Quando o campo cep perde o foco.
+        $('.cep').blur(function () {
+            //Nova variável "cep" somente com dígitos.
+            var cep = $(this).val().replace(/\D/g, '');
+            //Verifica se campo cep possui valor informado.
+            if (cep != "") {
+                //Expressão regular para validar o CEP.
+                var validacep = /^[0-9]{8}$/;
+                //Valida o formato do CEP.
+                if (validacep.test(cep)) {
+                    //Preenche os campos com "..." enquanto consulta webservice.
+                    $('.rua').val("...");
+                    $('.bairro').val("...");
+                    $('.cidade').val("...");
+                    $('.uf').val("...");
+                    //Consulta o webservice viacep.com.br/
+                    $.getJSON("https://viacep.com.br/ws/" + cep + "/json/?callback=?", function (dados) {
+
+                        if (!("erro" in dados)) {
+                            //Atualiza os campos com os valores da consulta.
+                            $('.rua').val(dados.logradouro);
+                            $('.bairro').val(dados.bairro);
+                            $('.cidade').val(dados.localidade);
+                            $('.uf').val(dados.uf);
+
+                        } //end if.
+                        else {
+                            //CEP pesquisado não foi encontrado.
+                            limpa_formulário_cep();
+                            swal('Opss', 'CEP não encontrado!!', 'error');
+                        }
+                    });
+                } //end if.
+                else {
+                    //cep é inválido.
+                    limpa_formulário_cep();
+                    swal('Errado', 'Formato inválido!!', 'warning');
+                }
+            } //end if.
+            else {
+                //cep sem valor, limpa formulário.
+                limpa_formulário_cep();
+            }
+        });
+    });
+
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+

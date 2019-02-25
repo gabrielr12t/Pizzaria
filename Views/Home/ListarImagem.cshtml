@@ -1,0 +1,8 @@
+@model IEnumerable<ApplicationCommerce.Models.Foto>
+<p>Olá mundo</p>
+    @{
+        foreach (var item in Model)
+        {
+            <img src="@item.Caminho" class="img-rounded" alt="Cinque Terre">
+        }
+    }

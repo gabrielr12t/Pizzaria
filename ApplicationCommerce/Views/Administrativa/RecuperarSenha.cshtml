@@ -1,0 +1,50 @@
+﻿@model ApplicationCommerce.Models.Pessoa
+
+
+<div class="container">
+    <h2>Recuperação de senha</h2>
+    <form asp-action="RecuperarSenha">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+
+            <div class="col-sm-10">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span><br />
+                <input type="submit" value="Enviar" class="btn btn-success" /><br /><br />
+                @{
+                    if (ViewData["Erro"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade in">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <strong>Erro!</strong> Este email não possui cadastro no sistema
+                        </div>
+                    }
+                    if (ViewData["Enviou"] != null)
+                    {
+                        if (ViewData["Enviou"].Equals("erro"))
+                        {
+                            <div class="alert alert-warning alert-dismissible fade in">
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                <strong>Ops!</strong> Ocorreu algum erro ao enviar o email. tente novamente
+                            </div>
+                        }
+                        if (ViewData["Enviou"].Equals("enviou"))
+                        {
+                            <div class="alert alert-success alert-dismissible fade in">
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                <strong>Pronto!</strong> Enviamos uma nova senha ao seu email
+                                <a asp-controller="Administrativa" asp-action="Login">Voltar à tela de login</a>
+                            </div>
+                        }
+                    }
+                }
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
